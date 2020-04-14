@@ -1,6 +1,6 @@
+# imported classes ('Person', 'bcolor') from  'game.py'.
 from classes.game import Person, bcolors
 
-# imported classes ('Person', 'bcolor') from  'game.py'.
 
 # Build a magic list filled with dictionaries.
 magic = [
