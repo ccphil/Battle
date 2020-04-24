@@ -1,19 +1,36 @@
 # imported classes ('Person', 'bcolor') from  'game.py'.
 from classes.game import Person, bcolors
+from classes.magic import Spell
+from classes.inventory import Item
 
+# Create Black Magic
+fire = Spell("Fire", 10, 100, "black")
+thunder = Spell("Thunder", 10, 100, "black")
+blizzard = Spell("Blizzard", 10, 100, "black")
+meteor = Spell("Meteor", 20, 200, "black")
+quake = Spell("Quake", 14, 140, "black")
+# Create White Magic
+cure = Spell("Cure", 12, 120, "white")
+cura = Spell("Cura", 18, 200, "white")
+# Create some Items
+potion = Item("Potion", "potion", "Heals 50 HP", 50)
+hipotion = Item("Hi-Potion", "potion", "Haels 100 HP", 100)
+superpotion = Item("Super Potion", "potion", "Heals for 500", 500)
+elixir = Item("Elixir", "elixir", "Fully restores HP/MP of one party member", 9999)
+megaelixir = Item("MegaElixir", "elixir", "Fully restores HP/MP of entire party", 9999)
 
-# Build a magic list filled with dictionaries.
-magic = [
-    {"name": "Fire", "cost": 10, "dmg": 100},
-    {"name": "Thunder", "cost": 10, "dmg": 124},
-    {"name": "Blizzard", "cost": 10, "dmg": 102},
-]
+grenade = Item("Grenade", "attack", "Deals 500 damage", 500)
 
+# Instantiate Person
 # Next we instantiate the 'person' class named 'player' with hp, mp, atk, df, and magic spells.
-player = Person(460, 65, 60, 34, magic)
+player = Person(
+    460, 65, 60, 34, [fire, thunder, blizzard, meteor, quake, cure, cura], []
+)  # creating spell list inline marked by []
 
 # Next we instantaite the enemy. We are gonna reuse the 'Person' class that contains all the needed varaibles.
-enemy = Person(1200, 65, 45, 25, magic)
+enemy = Person(1200, 65, 45, 25, [], [])
+# To recap we instantiate the Person class twice. One instance of the person class geos into player, the other into enemy. Using two different variables lets us use different parameters for the variables we set in the class.
+
 
 running = True
 i = 0
@@ -42,32 +59,39 @@ while running:
         magic_choice = (
             int(input("Choose a spell:")) - 1
         )  # Here we reduce the choice by 1 already inline except doing it seperatly on a new line.
+
         # Get everything (information) we need from the spell.
-        magic_dmg = player.generate_spell_damage(magic_choice)
-        spell = player.get_spell_name(
-            magic_choice
-        )  # variable 'spell' gets assigned the spell name by 'magic_choice"
-        cost = player.get_spell_mp_cost(
-            magic_choice
-        )  # variable gets assigned the mana cost for spell.
+
+        spell = player.magic[magic_choice]
+        magic_dmg = spell.generate_damage()
+
         # Get infromation about players mana points and check if they are sufficent.
         current_mp = (
             player.get_mp()
         )  # Get current mana from player and put it into new variable
 
-        if cost > current_mp:
+        if spell.cost > current_mp:
             print(bcolors.FAIL + "\nNot enough MP\n" + bcolors.ENDC)
             continue
 
-        player.reduce_mp(cost)
-        enemy.take_damage(magic_dmg)
-        print(
-            bcolors.OKBLUE + "\n" + spell + " deals",
-            str(magic_dmg),
-            "points of damage." + bcolors.ENDC,
-        )
+        player.reduce_mp(spell.cost)
 
-    enemy_choice = 1  # forcing the enemy to always choose 1.
+        if spell.type == "white":
+            player.heal(magic_dmg)
+            print(
+                bcolors.OKBLUE + "\n" + spell.name + "heals for",
+                str(magic_dmg),
+                "HP." + bcolors.ENDC,
+            )
+        elif spell.type == "black":
+            enemy.take_damage(magic_dmg)
+            print(
+                bcolors.OKBLUE + "\n" + spell.name + " deals",
+                str(magic_dmg),
+                "points of damage." + bcolors.ENDC,
+            )
+
+    enemy_choice = 1  # forcing the enemy to always choose attack (1.).
 
     enemy_dmg = enemy.generate_damage()
     player.take_damage(enemy_dmg)
@@ -114,15 +138,3 @@ if input(
     "exit"
 ):  # just for stopping the program while testing. buggy but seems to work.
     running = False
-
-"""while running:
-    print("=========================================")
-    # player.choose_action()
-    player.choose_magic()
-    choice = input("Choose action:")
-    index = int(choice) - 1
-
-    print("You chose", player.get_spell_name(int(index)))
-
-    running = False
-"""
