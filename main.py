@@ -21,10 +21,13 @@ megaelixir = Item("MegaElixir", "elixir", "Fully restores HP/MP of entire party"
 
 grenade = Item("Grenade", "attack", "Deals 500 damage", 500)
 
+
+player_spells = [fire, thunder, blizzard, meteor, quake, cure, cura]
+player_items = [potion, hipotion, superpotion, elixir, megaelixir, grenade]
 # Instantiate Person
 # Next we instantiate the 'person' class named 'player' with hp, mp, atk, df, and magic spells.
 player = Person(
-    460, 65, 60, 34, [fire, thunder, blizzard, meteor, quake, cure, cura], []
+    460, 65, 60, 34, player_spells, player_items
 )  # creating spell list inline marked by []
 
 # Next we instantaite the enemy. We are gonna reuse the 'Person' class that contains all the needed varaibles.
@@ -46,6 +49,7 @@ while running:
     choice = input("Choose an action:")
     index = int(choice) - 1
 
+    # Setting index 0 to be the attack option
     if index == 0:
         dmg = (
             player.generate_damage()
@@ -54,6 +58,7 @@ while running:
         print(
             "You attacked for", dmg, "points of damage."
         )  # Telling the player what is happening.
+    # Setting index 1 to be the magic option
     elif index == 1:
         player.choose_magic()
         magic_choice = (
@@ -90,6 +95,15 @@ while running:
                 str(magic_dmg),
                 "points of damage." + bcolors.ENDC,
             )
+        if magic_choice == -1:
+            continue
+    # Setting index 2 to the inventory option
+    elif index == 2:
+        player.choose_item()
+        item_choice = int(input("Choose an item:")) + 1
+
+    if item_choice == -1:
+        continue
 
     enemy_choice = 1  # forcing the enemy to always choose attack (1.).
 

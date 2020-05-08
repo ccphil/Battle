@@ -67,9 +67,9 @@ class Person:
 
     def choose_action(self):
         i = 1
-        print("Actions")
+        print(bcolors.OKBLUE + bcolors.BOLD + "    ACTION:" + bcolors.ENDC)
         for item in self.action:
-            print(str(i) + ":", item)  # pint index number to string.
+            print("        " + str(i) + ":", item)  # print index number to string.
             i += 1  # going to increment i
 
     def choose_magic(self):
@@ -80,3 +80,10 @@ class Person:
                 "        " + str(i) + ".", spell.name, "(cost:", str(spell.cost) + ")"
             )
             i += 1
+
+    def choose_item(self):
+        i = 1
+        print("\n" + bcolors.OKGREEN + bcolors.BOLD + "    ITEMS:" + bcolors.ENDC)
+        for item in self.items:
+            print("        " + str(i) + ".", item.name, ":", item.description, "x5")
+            i += 1  # increasing the number position by one for the item list.
